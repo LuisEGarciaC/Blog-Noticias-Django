@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %} {% load static %} {% block content %} 
+
+{% for post in posts %} 
+
+{% if forloop.first and posts.number == 1 %}
+<div class="p-4 p-md-5 mb-4 rounded text-bg-info">
+	<div class="col-md-12 px-0">
+		<h1 class="display-4 fst-italic text-white">{{post.title}}</h1>
+		<p class="lead my-3">{{post.excerpt}}</p>
+		<p class="lead mb-0">
+			<a href="{% url 'post' post.id %}" class="text-white fw-bold"
+				>Seguir leyendo...</a
+			>
+		</p>
+	</div>
+</div>
+{% endif %} {% if not forloop.first %}
+<div class="card mb-3">
+	<div class="row g-0">
+		<div class="col-md-5">
+			<img
+				src="media/{{ post.image }} "
+				class="img-fluid rounded-start"
+				alt="..."
+			/>
+		</div>
+
+		<div class="col-md-7">
+			<div class="card-body">
+				<strong class="d-inline-block mb-2 text-primary"
+					>{{post.category}}</strong
+				>
+				<h4 class="mb-0">{{post.title}}</h4>
+				<div class="mb-1 text-muted">{{post.created|date:"d M y"}}</div>
+				<p class="card-text mb-auto">{{post.excerpt}}</p>
+				<p class="card-text">
+					<small class="text-muted"
+						><a href="{% url 'post' post.id %}" class="stretched-link"
+							>Seguir leyendo</a
+						></small
+					>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %} {% endfor %} {{posts}} {{posts.has_next}} {{posts.number}}
+{{posts.pagination.num__page}} {{auxi}}
+<!-- NAVEGACION ENTRE ARTICULOS MAS ANTIGUOS - PAGINACION -->
+<nav aria-label="...">
+	<ul class="pagination justify-content-center">
+		<li class="page-item">
+			<a class="page-link" href="?page=1">Inicio</a>
+		</li>
+
+
+		<li class="page-item">
+			<a
+				class="page-link  {% if posts.number == 1 %} disabled {% endif %}"
+				href="{% if not posts.number == 1 %} ?page={{ posts.previous_page_number }} {% endif %}"
+				>Anterior</a
+			>
+		</li>
+ {% for i in auxi %}
+		<li
+			class="page-item {% if posts.number == forloop.counter %} active {% endif %}"
+		>
+			<a class="page-link" href="?page={{ forloop.counter }}"
+				>{{forloop.counter}}</a
+			>
+		</li>
+		{% endfor %} 
+		<li class="page-item  {% if posts.number ==  posts.paginator.num_pages %} disabled {% endif %}">
+			<a class="page-link " 
+			href="{% if not posts.number == posts.paginator.num_pages %} ?page={{ posts.next_page_number }} {% endif %}"
+				>siguiente</a
+			>
+		</li>
+
+		<li class="page-item">
+			<a class="page-link" href="?page={{ posts.paginator.num_pages }}"
+				>Ultima</a
+			>
+		</li>
+	</ul>
+</nav>
+
+{% endblock %}
